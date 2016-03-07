@@ -1,10 +1,10 @@
-import { Component } from '../../../../node_modules/angular2/core.d.ts';
-import { RouteConfig, ROUTER_DIRECTIVES, ROUTER_PROVIDERS } from '../../../../node_modules/angular2/router.d.ts';
+import { Component } from 'angular2/core';
+import { RouteConfig, ROUTER_DIRECTIVES, ROUTER_PROVIDERS } from 'angular2/router';
 
-import { DashboardComponent } from './dashboard.component.ts';
-import { HeroService } from './hero.service.ts';
-import { HeroesComponent } from './heroes.component.ts';
-import { HeroDetailComponent } from './hero-detail.component.ts';
+import { DashboardComponent } from './dashboard.component';
+import { HeroService } from './hero.service';
+import { HeroesComponent } from './heroes.component';
+import { HeroDetailComponent } from './hero-detail.component';
 
 @RouteConfig([
   {

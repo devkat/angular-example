@@ -1,10 +1,10 @@
-import {Component} from '../../../../node_modules/angular2/core.d.ts';
-import {OnInit} from '../../../../node_modules/angular2/core.d.ts';
-import {Router} from '../../../../node_modules/angular2/router.d.ts';
+import {Component} from 'angular2/core';
+import {OnInit} from 'angular2/core';
+import {Router} from 'angular2/router';
 
 import {Hero} from './hero';
-import {HeroDetailComponent} from './hero-detail.component.ts';
-import {HeroService} from './hero.service.ts';
+import {HeroDetailComponent} from './hero-detail.component';
+import {HeroService} from './hero.service';
 
 @Component({
   selector: 'my-heroes',

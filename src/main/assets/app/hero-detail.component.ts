@@ -1,8 +1,8 @@
-import {Component, OnInit} from '../../../../node_modules/angular2/core.d.ts';
-import {RouteParams} from '../../../../node_modules/angular2/router.d.ts';
+import {Component, OnInit} from 'angular2/core';
+import {RouteParams} from 'angular2/router';
 
 import {Hero} from './hero';
-import {HeroService} from './hero.service.ts';
+import {HeroService} from './hero.service';
 
 
 @Component({

@@ -22,7 +22,23 @@ class MyServiceActor extends Actor with MyService {
 // this trait defines our service behavior independently from the service actor
 trait MyService extends HttpService {
 
+  val versions = Map(
+    "angular-example" -> "1.0.0-SNAPSHOT",
+    "angular2" -> "2.0.0-beta.8",
+    "es6-promise" -> "3.1.2",
+    "es6-shim" -> "0.35.0",
+    "reflect-metadata" -> "0.1.3",
+    "rxjs" -> "5.0.0-beta.2",
+    "systemjs" -> "0.19.20"
+  )
+
   val myRoute =
+    pathPrefix("node_modules" / Segment) { moduleName =>
+      get {
+        val version = versions(moduleName)
+        getFromResourceDirectory(s"META-INF/resources/webjars/$moduleName/$version")
+      }
+    } ~
     pathPrefix("") {
       getFromResourceDirectory("")
     }

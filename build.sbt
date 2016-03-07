@@ -16,6 +16,8 @@ lazy val angularExample = (
     scalacOptions := Seq("-unchecked", "-deprecation", "-encoding", "utf8"),
     libraryDependencies ++= dependencies,
     Revolver.settings,
-    typingsFile := Some(baseDirectory.value / "typings" / "browser.d.ts")
+    JsEngineKeys.engineType := JsEngineKeys.EngineType.Node,
+    typingsFile := Some(baseDirectory.value / "typings" / "browser.d.ts"),
+    resolveFromWebjarsNodeModulesDir := true
   )).enablePlugins(SbtWeb)
 
