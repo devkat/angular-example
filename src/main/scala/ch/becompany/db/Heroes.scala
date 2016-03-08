@@ -10,7 +10,7 @@ import scala.concurrent.{ExecutionContext, Future}
 object Heroes {
 
   def toHero: HeroRow => Hero = {
-    case HeroRow(id, name) => Hero(id, name)
+    case HeroRow(id, name) => Hero(Some(id), name)
   }
 
   def find(id: Long)(implicit ex: ExecutionContext): Future[Option[Hero]] = {
@@ -21,13 +21,11 @@ object Heroes {
     db.run(HeroDao.result) map (_ map toHero)
   }
 
-  def add(hero: Hero) = {
-    val query = HeroDao.map(h => h.name) returning
-      HeroDao += hero.name
-    db.run(query)
+  def add(hero: Hero)(implicit ex: ExecutionContext): Future[Long] = {
+    db.run((HeroDao.map(_.name) returning HeroDao.map(_.id)) += hero.name)
   }
 
-  def update(id: Long, hero: Hero) = {
+  def update(id: Long, hero: Hero)(implicit ex: ExecutionContext) = {
     val query = (for {
       h <- HeroDao if h.id === id
     } yield {

@@ -10,7 +10,7 @@
 
   <changeSet id="1" author="BeCompany">
     <createTable tableName="hero">
-      <column name="id" type="bigint">
+      <column name="id" type="bigint" autoIncrement="true">
         <constraints nullable="false" primaryKey="true"/>
       </column>
       <column name="name" type="varchar">

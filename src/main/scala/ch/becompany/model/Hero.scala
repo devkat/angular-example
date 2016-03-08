@@ -1,3 +1,3 @@
 package ch.becompany.model
 
-case class Hero(id: Long, name: String)
+case class Hero(id: Option[Long], name: String)

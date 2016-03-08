@@ -22,10 +22,26 @@ export class HeroDetailComponent {
 
   ngOnInit() {
     let id = +this._routeParams.get('id');
-    this._heroService.getHero(id).subscribe(
-      hero => this.hero = hero,
-      error => console.log(error)
-    )
+    if (id) {
+      this._heroService.getHero(id).subscribe(
+        hero => this.hero = hero,
+        error => console.log(error)
+      )
+    } else {
+      this.hero = {
+        id: null,
+        name: ""
+      };
+    }
+  }
+
+  save() {
+    if (this.hero.id === null) {
+      this._heroService.addHero(this.hero.name).subscribe(
+        hero  => this.hero = hero,
+        error =>  console.log("Error: " + error)
+      );
+    }
   }
 
   goBack() {

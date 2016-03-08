@@ -7,6 +7,7 @@ import ch.becompany.db.Heroes
 import ch.becompany.model.Hero
 import ch.becompany.json.HeroJsonProtocol
 import spray.routing._
+import spray.json._
 
 import scala.concurrent.ExecutionContext
 
@@ -47,6 +48,11 @@ trait HeroService extends HttpService {
       path("heroes") {
         get {
           complete(Heroes.list())
+        } ~
+        post {
+          entity(as[Hero]) { hero =>
+            complete(Heroes.add(hero) map (id => hero.copy(id = Some(id))))
+          }
         }
       } ~
       path("heroes" / LongNumber) { id =>
@@ -62,6 +68,9 @@ trait HeroService extends HttpService {
         val version = versions(moduleName)
         getFromResourceDirectory(s"META-INF/resources/webjars/$moduleName/$version")
       }
+    } ~
+    path(PathEnd) {
+      getFromResource("index.html")
     } ~
     pathPrefix("") {
       getFromResourceDirectory("")
