@@ -1,13 +1,18 @@
-package ch.becompany
+package ch.becompany.rest
 
-import akka.actor.Actor
+import akka.actor.{ActorContext, Actor}
+import ch.becompany.Boot
+import ch.becompany.dao.Tables.HeroRow
+import ch.becompany.db.Heroes
+import ch.becompany.model.Hero
+import ch.becompany.json.HeroJsonProtocol
 import spray.routing._
-import spray.http._
-import MediaTypes._
+
+import scala.concurrent.ExecutionContext
 
 // we don't implement our route structure directly in the service actor because
 // we want to be able to test it independently, without having to spin up an actor
-class MyServiceActor extends Actor with MyService {
+class HeroServiceActor extends Actor with HeroService {
 
   // the HttpService trait defines only one abstract member, which
   // connects the services environment to the enclosing actor or test
@@ -16,11 +21,16 @@ class MyServiceActor extends Actor with MyService {
   // this actor only runs our route, but you could add
   // other things here, like request stream processing
   // or timeout handling
-  def receive = runRoute(myRoute)
+  def receive = runRoute(heroesRoute)
 }
 
 // this trait defines our service behavior independently from the service actor
-trait MyService extends HttpService {
+trait HeroService extends HttpService {
+  val context: ActorContext
+
+  import HeroJsonProtocol._
+  import spray.httpx.SprayJsonSupport._
+  import context.dispatcher
 
   val versions = Map(
     "angular-example" -> "1.0.0-SNAPSHOT",
@@ -32,7 +42,21 @@ trait MyService extends HttpService {
     "systemjs" -> "0.19.20"
   )
 
-  val myRoute =
+  lazy val heroesRoute =
+    pathPrefix("api") {
+      path("heroes") {
+        get {
+          complete(Heroes.list())
+        }
+      } ~
+      path("heroes" / LongNumber) { id =>
+        rejectEmptyResponse {
+          get {
+            complete(Heroes.find(id))
+          }
+        }
+      }
+    } ~
     pathPrefix("node_modules" / Segment) { moduleName =>
       get {
         val version = versions(moduleName)

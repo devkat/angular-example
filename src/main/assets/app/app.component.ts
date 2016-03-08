@@ -1,5 +1,6 @@
 import { Component } from 'angular2/core';
 import { RouteConfig, ROUTER_DIRECTIVES, ROUTER_PROVIDERS } from 'angular2/router';
+import { HTTP_PROVIDERS } from 'angular2/http';
 
 import { DashboardComponent } from './dashboard.component';
 import { HeroService } from './hero.service';
@@ -39,6 +40,7 @@ import { HeroDetailComponent } from './hero-detail.component';
   directives: [ ROUTER_DIRECTIVES ],
   providers: [
     ROUTER_PROVIDERS,
+    HTTP_PROVIDERS,
     HeroService
   ]
 })
