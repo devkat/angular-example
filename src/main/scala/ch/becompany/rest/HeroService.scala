@@ -60,6 +60,14 @@ trait HeroService extends HttpService {
           get {
             complete(Heroes.find(id))
           }
+        } ~
+        put {
+          entity(as[Hero]) { hero =>
+            complete {
+              Heroes.update(id, hero)
+              hero
+            }
+          }
         }
       }
     } ~

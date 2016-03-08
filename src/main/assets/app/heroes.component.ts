@@ -23,7 +23,7 @@ export class HeroesComponent implements OnInit {
   }
 
   ngOnInit() {
-    this._heroService.getHeroes().subscribe(
+    this._heroService.list().subscribe(
       heroes => this.heroes = heroes,
       error => console.log("Error: " + error)
     );

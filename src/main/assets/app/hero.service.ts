@@ -12,26 +12,40 @@ export class HeroService {
 
   constructor(private _http: Http) {}
 
-  getHeroes() {
+  heroUrl(id: number): string {
+    return `${this._heroesUrl}/${id}`;
+  }
+
+  list() {
     return this._http.get(this._heroesUrl)
       .map(res => <Hero[]> res.json())
       //.do(data => console.log(data))
       .catch(this.handleError);
   }
 
-  getHero(id: number) {
-    return this._http.get(`${this._heroesUrl}/${id}`)
+  find(id: number) {
+    return this._http.get(this.heroUrl(id))
       .map(res => <Hero> res.json())
       //.do(data => console.log(data))
       .catch(this.handleError);
   }
 
-  addHero (name: string): Observable<Hero> {
+  add(name: string): Observable<Hero> {
     let body = JSON.stringify({ name });
     let headers = new Headers({ 'Content-Type': 'application/json' });
     let options = new RequestOptions({ headers: headers });
 
     return this._http.post(this._heroesUrl, body, options)
+      .map(res => <Hero> res.json())
+      .catch(this.handleError)
+  }
+
+  update(hero: Hero): Observable<Hero> {
+    let body = JSON.stringify(hero);
+    let headers = new Headers({ 'Content-Type': 'application/json' });
+    let options = new RequestOptions({ headers: headers });
+
+    return this._http.put(this.heroUrl(hero.id), body, options)
       .map(res => <Hero> res.json())
       .catch(this.handleError)
   }
