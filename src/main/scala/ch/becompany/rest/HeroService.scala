@@ -4,8 +4,14 @@ import akka.actor.{ActorContext, Actor}
 import ch.becompany.Boot
 import ch.becompany.dao.Tables.HeroRow
 import ch.becompany.db.Heroes
-import ch.becompany.model.Hero
+import ch.becompany.model.{HeroValidator, Hero}
 import ch.becompany.json.HeroJsonProtocol
+import ch.becompany.validation.Validator
+import ch.becompany.validation.Validation.ValidationResult
+import shapeless._
+import spray.http.StatusCodes
+import spray.httpx.unmarshalling.FromRequestUnmarshaller
+import spray.httpx.marshalling._
 import spray.routing._
 import spray.json._
 
@@ -25,6 +31,8 @@ class HeroServiceActor extends Actor with HeroService {
   def receive = runRoute(heroesRoute)
 }
 
+case class ValidateRejection(result: ValidationResult) extends Rejection
+
 // this trait defines our service behavior independently from the service actor
 trait HeroService extends HttpService {
   val context: ActorContext
@@ -42,6 +50,44 @@ trait HeroService extends HttpService {
     "rxjs" -> "5.0.0-beta.2",
     "systemjs" -> "0.19.20"
   )
+
+  def validateEntity1[T:Validator, U <: HList](t: T): Directive0 =
+    new Directive0 {
+      def happly(inner: HNil ⇒ Route): Route = {
+        val validator = implicitly[Validator[T]]
+        val result = validator.validate(t)
+        if (result.isEmpty) inner(HNil)
+          else reject(ValidateRejection(result))
+      }
+    }
+/*
+  def validateEntity[T:Validator](t: T): Directive1[T] =
+    entity(um) flatMap {
+      case t =>
+        val validator = implicitly[Validator[T]]
+        val result = validator.validate(t)
+        if (result.isEmpty) t
+        else reject(ValidateRejection(result))
+    }
+*/
+
+  def validateEntity[T:Validator](d: Directive1[T]): Directive1[T] =
+    d flatMap {
+      case t =>
+        val validator = implicitly[Validator[T]]
+        val result = validator.validate(t)
+        if (result.isEmpty) provide(t)
+        else reject(ValidateRejection(result))
+    }
+
+  implicit val heroValidator = HeroValidator
+  val validateHero = validateEntity(entity(as[Hero]))
+
+  implicit val validateRejectionHandler = RejectionHandler {
+    case List(ValidateRejection(result)) => {
+      complete((StatusCodes.BadRequest, result.toJson))
+    }
+  }
 
   lazy val heroesRoute =
     pathPrefix("api") {
@@ -62,11 +108,11 @@ trait HeroService extends HttpService {
           }
         } ~
         put {
-          entity(as[Hero]) { hero =>
-            complete {
-              Heroes.update(id, hero)
-              hero
-            }
+          validateHero { hero =>
+              complete {
+                Heroes.update(id, hero)
+                hero
+              }
           }
         }
       }
