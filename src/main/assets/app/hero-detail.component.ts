@@ -1,51 +1,79 @@
-import {Component, OnInit} from 'angular2/core';
-import {RouteParams} from 'angular2/router';
+import { Component, OnInit } from 'angular2/core';
+import { RouteParams } from 'angular2/router';
+import { AbstractControl, ControlGroup, FormBuilder, FORM_DIRECTIVES } from 'angular2/common';
+import { Observable } from 'rxjs/Observable';
 
-import {Hero} from './hero';
-import {HeroService} from './hero.service';
+import { Hero } from './hero';
+import { HeroService } from './hero.service';
 
 
 @Component({
-  selector: 'my-hero-detail',
+  selector: 'hero-detail',
   inputs: ['hero'],
   templateUrl: 'app/hero-detail.component.html',
-  styleUrls: [ 'app/hero-detail.component.css' ]
+  styleUrls: [ 'app/hero-detail.component.css' ],
+  directives: [FORM_DIRECTIVES],
 })
 
 export class HeroDetailComponent {
-  hero: Hero;
+  model: Hero;
+  active = true;
+  heroForm: ControlGroup;
 
   constructor(
     private _heroService: HeroService,
-    private _routeParams: RouteParams) {
+    private _routeParams: RouteParams,
+    private _formBuilder: FormBuilder) {
+    this.heroForm = _formBuilder.group({
+      "name": [ "" ]
+    });
+  }
+
+  private setModel(hero: Hero) {
+    this.model = hero;
+    this.active = false;
+    setTimeout(() => this.active = true, 0);
   }
 
   ngOnInit() {
     let id = +this._routeParams.get('id');
     if (id) {
       this._heroService.find(id).subscribe(
-        hero => this.hero = hero,
+        hero => this.setModel(hero),
         error => console.log(error)
       )
     } else {
-      this.hero = {
+      this.model = {
         id: null,
         name: ""
       };
     }
   }
 
-  save() {
-    if (this.hero.id === null) {
-      this._heroService.add(this.hero.name).subscribe(
-        hero  => this.hero = hero,
-        error =>  console.log("Error: " + error)
-      );
+  private save(observable: Observable<Hero>) {
+    observable.subscribe(
+      hero => this.setModel(hero),
+      error => this.showValidationErrors(error)
+    );
+  }
+
+  onSubmit() {
+    if (this.model.id === null) {
+      this.save(this._heroService.add(this.model.name));
     } else {
-      this._heroService.update(this.hero).subscribe(
-        hero  => this.hero = hero,
-        error =>  console.log("Error: " + error)
-      );
+      this.save(this._heroService.update(this.model));
+    }
+  }
+
+  private showValidationErrors(errorMap: { [name: string]: string[] }) {
+    console.log("Error: ", errorMap);
+    for (name in errorMap) {
+      let control = this.heroForm.controls[name];
+      control.setErrors(errorMap[name], true);
+      control.markAsDirty(true);
+      console.log("control", control);
+      console.log("errors", control.errors);
+      console.log("valid?", control.valid);
     }
   }
 
