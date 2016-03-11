@@ -40,16 +40,7 @@ trait HeroService extends HttpService {
   import HeroJsonProtocol._
   import spray.httpx.SprayJsonSupport._
   import context.dispatcher
-
-  val versions = Map(
-    "angular-example" -> "1.0.0-SNAPSHOT",
-    "angular2" -> "2.0.0-beta.8",
-    "es6-promise" -> "3.1.2",
-    "es6-shim" -> "0.35.0",
-    "reflect-metadata" -> "0.1.3",
-    "rxjs" -> "5.0.0-beta.2",
-    "systemjs" -> "0.19.20"
-  )
+  import Dependencies._
 
   def validateEntity1[T:Validator, U <: HList](t: T): Directive0 =
     new Directive0 {
@@ -117,17 +108,24 @@ trait HeroService extends HttpService {
         }
       }
     } ~
-    pathPrefix("node_modules" / Segment) { moduleName =>
+    pathPrefix("bower_components" / Segment) { moduleName =>
       get {
-        val version = versions(moduleName)
-        getFromResourceDirectory(s"META-INF/resources/webjars/$moduleName/$version")
+        dependencies.find(d => d.parts.last == moduleName) match {
+          case Some(dep) =>
+            val dir = dep.parts.mkString("-")
+            System.out.println(s"Resolving $dir/${dep.version.version}")
+            getFromResourceDirectory(s"META-INF/resources/webjars/$dir/${dep.version.version}")
+          case None =>
+            System.out.println("Could not resolve module " + moduleName)
+            reject
+        }
       }
     } ~
     path(PathEnd) {
-      getFromResource("index.html")
+      getFromResource("polymer/index.html")
     } ~
     pathPrefix("") {
-      getFromResourceDirectory("")
+      getFromResourceDirectory("polymer")
     }
 
 }
