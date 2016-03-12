@@ -39,7 +39,7 @@ lazy val angularExample = (
       libraryDependencies ++= dependencies,
       Revolver.settings,
       JsEngineKeys.engineType := JsEngineKeys.EngineType.Node,
-      typingsFile := Some(baseDirectory.value / "typings" / "browser.d.ts"),
+      //typingsFile := Some(baseDirectory.value / "typings" / "browser.d.ts"),
       resolveFromWebjarsNodeModulesDir := true,
       liquibaseSettings,
       // register manual sbt command

@@ -110,11 +110,8 @@ trait HeroService extends HttpService {
     } ~
     pathPrefix("bower_components" / Segment) { moduleName =>
       get {
-        dependencies.find(d => d.parts.last == moduleName) match {
-          case Some(dep) =>
-            val dir = dep.parts.mkString("-")
-            System.out.println(s"Resolving $dir/${dep.version.version}")
-            getFromResourceDirectory(s"META-INF/resources/webjars/$dir/${dep.version.version}")
+        resolveDir(moduleName) match {
+          case Some(dir) => getFromResourceDirectory(dir)
           case None =>
             System.out.println("Could not resolve module " + moduleName)
             reject

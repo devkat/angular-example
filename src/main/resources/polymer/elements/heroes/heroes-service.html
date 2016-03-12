@@ -1,0 +1,14 @@
+<link rel="import" href="/bower_components/polymer/polymer.html">
+
+<dom-module id="heroes-service">
+  <template>
+    <iron-ajax
+        id="ajax"
+        auto
+        url="/api/heroes"
+        handle-as="json"
+        on-response="heroesLoaded"
+        debounce-duration="300"></iron-ajax>
+  </template>
+  <script src="/bower_components/angular-example/polymer/elements/heroes/heroes-service.js"></script>
+</dom-module>

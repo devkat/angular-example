@@ -27,6 +27,7 @@ object Dependencies {
     "github-com-PolymerElements" :: "font-roboto" :: "1.0.1",
     "github-com-PolymerElements" :: "iron-a11y-announcer" :: "1.0.4",
     "github-com-PolymerElements" :: "iron-a11y-keys-behavior" :: "1.1.0",
+    "github-com-PolymerElements" :: "iron-ajax" :: "1.1.1",
     "github-com-PolymerElements" :: "iron-autogrow-textarea" :: "1.0.10",
     "github-com-PolymerElements" :: "iron-behaviors" :: "1.0.11",
     "github-com-PolymerElements" :: "iron-checked-element-behavior" :: "1.0.3",
@@ -95,5 +96,12 @@ object Dependencies {
   )
 
   val dependencies = angularDependencies ++ polymerDependencies
+
+  def resolveDir(module: String): Option[String] =
+    dependencies.find(d => d.parts.last == module) map { dep =>
+      val dir = dep.parts.mkString("-")
+      //System.out.println(s"Resolving $dir/${dep.version.version}")
+      s"META-INF/resources/webjars/$dir/${dep.version.version}"
+    }
 
 }

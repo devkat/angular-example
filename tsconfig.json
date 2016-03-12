@@ -1,6 +1,15 @@
 {
   "compilerOptions": {
     "target": "es5",
+    "noLib": false,
+    "sourceMap": false,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "removeComments": false,
+    "noImplicitAny": true
+  },
+  "compilerOptionsAngular": {
+    "target": "es5",
     "module": "system",
     "moduleResolution": "node",
     "sourceMap": false,

@@ -43,13 +43,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <!-- Tile icon for Win8 (144x144) -->
   <meta name="msapplication-TileImage" content="images/touch/ms-touch-icon-144x144-precomposed.png">
 
-  <!-- build:css styles/main.css -->
   <link rel="stylesheet" href="styles/main.css">
-  <!-- endbuild-->
 
-  <!-- build:js bower_components/webcomponentsjs/webcomponents-lite.min.js -->
   <script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
-  <!-- endbuild -->
 
   <!-- Because this project uses vulcanize this should be your only html import
        in this file. All other imports should go in elements.html -->
@@ -82,9 +78,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <span>Home</span>
           </a>
 
-          <a data-route="users" href="{{baseUrl}}users">
+          <a data-route="heroes" href="{{baseUrl}}heroes">
             <iron-icon icon="info"></iron-icon>
-            <span>Users</span>
+            <span>Heroes</span>
           </a>
 
           <a data-route="contact" href="{{baseUrl}}contact">
@@ -154,21 +150,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               </paper-material>
             </section>
 
-            <section data-route="users" tabindex="-1">
+            <section data-route="heroes" tabindex="-1">
               <paper-material elevation="1">
-                <h1 class="page-title">Users</h1>
-                <p>This is the users section</p>
-                <a href$="{{baseUrl}}users/Addy">Addy</a><br>
-                <a href$="{{baseUrl}}users/Rob">Rob</a><br>
-                <a href$="{{baseUrl}}users/Chuck">Chuck</a><br>
-                <a href$="{{baseUrl}}users/Sam">Sam</a>
+                <heroes-service id="heroesService"></heroes-service>
+                <h1 class="page-title">Heroes</h1>
+                <p>This is the heroes section</p>
+                <script>
+                  document.getElementById('heroesService').addEventListener("heroesLoaded", function(event) {
+                    console.log("Loaded", event);
+                    document.getElementById('heroesList').heroes = event.detail;
+                  });
+                </script>
+                <heroes-list id="heroesList">
+                </heroes-list>
               </paper-material>
             </section>
 
-            <section data-route="user-info" tabindex="-1">
+            <section data-route="hero-info" tabindex="-1">
               <paper-material elevation="1">
-                <h1 class="page-title">User: {{params.name}}</h1>
-                <div>This is {{params.name}}'s section</div>
+                <hero-detail></hero-detail>
               </paper-material>
             </section>
 
@@ -207,9 +207,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   </template>
 
-  <!-- build:js scripts/app.js -->
   <script src="scripts/app.js"></script>
-  <!-- endbuild-->
 </body>
 
 </html>

@@ -1,0 +1,10 @@
+<link rel="import" href="/bower_components/polymer/polymer.html">
+
+<dom-module id="heroes-list">
+  <template>
+    <template is="dom-repeat" items="{{heroes}}">
+      <a>{{item.name}}</a><br/>
+    </template>
+  </template>
+  <script src="/bower_components/angular-example/polymer/elements/heroes/heroes-list.js"></script>
+</dom-module>

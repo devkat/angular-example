@@ -1,0 +1,20 @@
+<link rel="import" href="/bower_components/polymer/polymer.html">
+
+<dom-module id="hero-detail">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+      }
+
+      span,
+      input {
+        @apply(--paper-font-body2);
+      }
+    </style>
+
+    <h1 class="page-title">{{hero.name}}</h1>
+  </template>
+
+  <script src="/bower_components/angular-example/polymer/elements/heroes/hero-detail.js"></script>
+</dom-module>

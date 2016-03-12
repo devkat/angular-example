@@ -4,7 +4,7 @@ import { AbstractControl, ControlGroup, FormBuilder, FORM_DIRECTIVES } from 'ang
 import { Observable } from 'rxjs/Observable';
 
 import { Hero } from './hero';
-import { HeroService } from './hero.service';
+import { HeroService } from './hero.service.ts';
 
 
 @Component({

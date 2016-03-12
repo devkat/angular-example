@@ -8,8 +8,8 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 
-<link rel="import" href="../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../bower_components/paper-styles/typography.html">
+<link rel="import" href="/bower_components/polymer/polymer.html">
+<link rel="import" href="/bower_components/paper-styles/typography.html">
 
 <dom-module id="my-greeting">
   <template>
@@ -30,21 +30,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <input id="greeting-input" value="{{greeting::input}}">
   </template>
 
-  <script>
-    (function() {
-      'use strict';
+  <script src="/bower_components/angular-example/polymer/elements/my-greeting/my-greeting.js"></script>
+  <!--
+  Polymer({
+    is: 'my-greeting',
 
-      Polymer({
-        is: 'my-greeting',
-
-        properties: {
-          greeting: {
-            type: String,
-            value: 'Welcome!',
-            notify: true
-          }
-        }
-      });
-    })();
-  </script>
+    properties: {
+      greeting: {
+        type: String,
+        value: 'Welcome!',
+        notify: true
+      }
+    }
+  });
+  -->
 </dom-module>
